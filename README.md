@@ -33,21 +33,61 @@ A full‑stack web application that helps assess **credit risk** and detect **fr
 ## Project Structure
 
 ```
-Credit_Fraud/
-├── backend/           # Backend API (e.g. FastAPI / Python)
-│   └── ...            # Backend source, requirements, etc.
-└── frontend/          # React frontend
-    ├── src/
-    │   ├── App.js
-    │   ├── components/
-    │   │   ├── HomePage.jsx
-    │   │   ├── CreditRiskForm.jsx
-    │   │   ├── FraudDetector.jsx
-    │   │   ├── Learn.jsx
-    │   │   ├── LoginPage.jsx
-    │   │   └── SignupPage.jsx
-    │   └── styles, assets, etc.
-    └── package.json
+credit-risk-fraud-app/
+├── README.md
+├── .gitignore
+├── backend/
+│   ├── main.py                # FastAPI entry point (app = FastAPI())
+│   ├── requirements.txt       # Backend Python dependencies
+│   ├── models/                # Pydantic models, ORM models
+│   │   └── __init__.py
+│   ├── routers/               # API routes
+│   │   ├── credit_risk.py     # /predict/credit-risk endpoint
+│   │   ├── fraud.py           # /predict/fraud endpoint
+│   │   └── __init__.py
+│   ├── services/              # ML / scoring logic
+│   │   ├── credit_risk_model.py
+│   │   ├── fraud_model.py
+│   │   └── __init__.py
+│   ├── data/                  # Any sample data, models, etc.
+│   └── config/                # Settings, constants
+│       └── __init__.py
+│
+└── frontend/
+    ├── package.json
+    ├── public/
+    │   ├── index.html
+    │   ├── favicon.ico
+    │   ├── images/
+    │   │   ├── hero.png
+    │   │   ├── credit-risk-illustration.png
+    │   │   └── fraud-illustration.png
+    │   └── logo192.png
+    └── src/
+        ├── index.js
+        ├── App.js
+        ├── App.css
+        ├── components/
+        │   ├── HomePage.jsx
+        │   ├── CreditRiskForm.jsx
+        │   ├── FraudDetector.jsx
+        │   ├── Learn.jsx
+        │   ├── LoginPage.jsx
+        │   ├── SignupPage.jsx
+        │   └── common/          # Optional shared UI
+        │       ├── Layout.jsx
+        │       └── Card.jsx
+        ├── styles/
+        │   ├── HomePage.css
+        │   ├── CreditRiskForm.css
+        │   ├── FraudDetector.css
+        │   ├── Learn.css
+        │   ├── LoginPage.css
+        │   └── SignupPage.css
+        └── utils/
+            ├── api.js          # Helper for calling backend
+            └── constants.js    # API base URL, etc.
+
 ```
 
 Adjust the structure above if your folders/files differ.
