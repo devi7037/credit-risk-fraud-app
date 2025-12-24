@@ -37,7 +37,7 @@ export default function CreditRiskForm() {
       params.append('region', formData.region);
 
       const response = await fetch(
-        `http://localhost:8000/predict/credit-risk?${params}`,
+        `https://credit-risk-fraud-app-backend.onrender.com/predict/credit-risk?${params}`,
         { method: 'POST' }
       );
 
@@ -68,7 +68,6 @@ export default function CreditRiskForm() {
 
   return (
     <div className="credit-risk-container">
-      {/* LEFT COLUMN — FORM (UNCHANGED) */}
       <div className="form-section">
         <h3>Enter Borrower Information</h3>
 
@@ -121,12 +120,10 @@ export default function CreditRiskForm() {
         </form>
       </div>
 
-      {/* RIGHT COLUMN — IMAGE + RESULTS */}
       <div className="result-section">
-        {/*  IMAGE ADDED (RIGHT SIDE, NOTHING REMOVED) */}
         <div className="credit-image-right">
           <img
-            src="/credit.webp"
+            src={process.env.PUBLIC_URL + '/credit.webp'}
             alt="Credit risk analysis illustration"
           />
         </div>

@@ -9,12 +9,10 @@ export default function HomePage({ navigateTo }) {
 
   return (
     <div className="home-page" id="home">
-      {/* ============ HERO SECTION ============ */}
       <section className="hero">
-        {/*  ADDED IMAGE (LEFT SIDE) */}
         <div className="hero-image">
           <img
-            src="/172056-red-and-blue-world-map-abstract-background.jpg"
+            src={process.env.PUBLIC_URL + '/172056-red-and-blue-world-map-abstract-background.jpg'}
             alt="World map abstract background"
           />
         </div>
@@ -47,7 +45,6 @@ export default function HomePage({ navigateTo }) {
         </div>
       </section>
 
-      {/* ============ FEATURES SECTION ============ */}
       <section className="features" id="features">
         <div className="section-header">
           <h2>Our Core Features</h2>
@@ -147,7 +144,6 @@ export default function HomePage({ navigateTo }) {
         </div>
       </section>
 
-      {/* ============ HOW IT WORKS SECTION ============ */}
       <section className="how-it-works" id="how-it-works">
         <div className="section-header">
           <h2>How It Works</h2>
@@ -179,7 +175,6 @@ export default function HomePage({ navigateTo }) {
         </div>
       </section>
 
-      {/* ============ STATS SECTION ============ */}
       <section className="stats">
         <div className="stat-card">
           <div className="stat-number">82%</div>
@@ -199,7 +194,6 @@ export default function HomePage({ navigateTo }) {
         </div>
       </section>
 
-      {/* ============ USE CASES SECTION ============ */}
       <section className="use-cases">
         <div className="section-header">
           <h2>Perfect For</h2>
@@ -238,7 +232,6 @@ export default function HomePage({ navigateTo }) {
         </div>
       </section>
 
-      {/* ============ BENEFITS SECTION ============ */}
       <section className="benefits">
         <div className="section-header">
           <h2>Why Choose Us?</h2>
@@ -279,7 +272,6 @@ export default function HomePage({ navigateTo }) {
         </div>
       </section>
 
-      {/* ============ CTA SECTION ============ */}
       <section className="cta">
         <h2>Ready to Get Started?</h2>
         <p>Explore the tools built for this academic project.</p>
@@ -294,7 +286,6 @@ export default function HomePage({ navigateTo }) {
         </div>
       </section>
 
-      {/* ============ FOOTER ============ */}
       <footer className="footer">
         <div className="footer-content">
           <div className="footer-section">
@@ -338,7 +329,6 @@ export default function HomePage({ navigateTo }) {
         </div>
       </footer>
 
-      {/* ============ MODAL POPUP ============ */}
       {activeModal && (
         <div className="modal-overlay" onClick={closeModal}>
           <div className="modal-box" onClick={(e) => e.stopPropagation()}>

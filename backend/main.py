@@ -3,6 +3,8 @@ from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
 import os
 import sys
+import json
+from datetime import datetime
 
 # Add backend directory to path
 sys.path.append(os.path.dirname(__file__))
@@ -10,16 +12,19 @@ sys.path.append(os.path.dirname(__file__))
 try:
     from config import config
 except ImportError:
-    # Fallback configuration if config.py has issues
     class FallbackConfig:
         API_TITLE = "Credit Risk & Fraud Detection Platform"
         API_VERSION = "1.0.0"
         API_DESCRIPTION = "AI/ML platform for financial inclusion"
         CORS_ORIGINS = ["*"]
-        ENVIRONMENT = "development"
-        DEBUG = True
+        ENVIRONMENT = "production"
+        DEBUG = False
     config = FallbackConfig()
 
+try:
+    from database import db
+except ImportError:
+    db = None
 
 # Initialize FastAPI app
 app = FastAPI(
@@ -27,7 +32,6 @@ app = FastAPI(
     version=config.API_VERSION,
     description=config.API_DESCRIPTION
 )
-
 
 # Enable CORS
 app.add_middleware(
@@ -38,8 +42,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-
-# ============ ROUTES ============
+# ============ HEALTH & INFO ROUTES ============
 
 @app.get("/")
 async def root():
@@ -47,9 +50,9 @@ async def root():
     return {
         "message": "Credit Risk & Fraud Detection Platform",
         "version": config.API_VERSION,
-        "status": "running"
+        "status": "running",
+        "timestamp": datetime.now().isoformat()
     }
-
 
 @app.get("/health")
 async def health_check():
@@ -57,9 +60,11 @@ async def health_check():
     return {
         "status": "healthy",
         "environment": config.ENVIRONMENT,
-        "debug": config.DEBUG
+        "debug": config.DEBUG,
+        "timestamp": datetime.now().isoformat()
     }
 
+# ============ CREDIT RISK PREDICTION ============
 
 @app.post("/predict/credit-risk")
 async def predict_credit_risk(
@@ -85,6 +90,16 @@ async def predict_credit_risk(
     """
     
     try:
+        # Validate inputs
+        if not (18 <= age <= 100):
+            raise ValueError("Age must be between 18 and 100")
+        if income <= 0:
+            raise ValueError("Income must be positive")
+        if not (0 <= credit_history_months <= 600):
+            raise ValueError("Credit history must be between 0 and 600 months")
+        if not (0 <= payment_regularity <= 1):
+            raise ValueError("Payment regularity must be between 0 and 1")
+        
         # Calculate credit risk based on borrower characteristics
         risk_score = 0.0
         
@@ -143,15 +158,39 @@ async def predict_credit_risk(
         else:
             risk_category = "HIGH"
         
+        # Store in database if available
+        if db:
+            try:
+                conn = db.get_connection()
+                cursor = conn.cursor()
+                input_data = json.dumps({
+                    "age": age,
+                    "income": income,
+                    "credit_history_months": credit_history_months,
+                    "payment_regularity": payment_regularity,
+                    "region": region
+                })
+                cursor.execute('''
+                    INSERT INTO predictions (prediction_type, input_data, risk_score, risk_category)
+                    VALUES (?, ?, ?, ?)
+                ''', ('credit_risk', input_data, risk_score, risk_category))
+                conn.commit()
+                conn.close()
+            except Exception as db_error:
+                print(f"Database error: {db_error}")
+        
         return {
-            "risk_score": risk_score,
+            "risk_score": round(risk_score, 4),
             "risk_category": risk_category,
-            "message": "Real credit risk analysis based on borrower characteristics."
+            "message": "Credit risk analysis based on borrower characteristics"
         }
     
+    except ValueError as ve:
+        raise HTTPException(status_code=400, detail=str(ve))
     except Exception as e:
-        raise HTTPException(status_code=400, detail=str(e))
+        raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
 
+# ============ FRAUD DETECTION ============
 
 @app.post("/predict/fraud")
 async def predict_fraud(
@@ -175,6 +214,20 @@ async def predict_fraud(
     """
     
     try:
+        # Validate inputs
+        if transaction_amount <= 0:
+            raise ValueError("Transaction amount must be positive")
+        if customer_age_account < 0:
+            raise ValueError("Customer account age cannot be negative")
+        
+        valid_categories = ['retail', 'grocery', 'restaurant', 'gas', 'entertainment', 'online', 'travel', 'medical']
+        if merchant_category.lower() not in valid_categories:
+            raise ValueError(f"Invalid merchant category. Must be one of: {', '.join(valid_categories)}")
+        
+        valid_times = ['morning', 'afternoon', 'evening', 'night']
+        if time_of_day.lower() not in valid_times:
+            raise ValueError(f"Invalid time of day. Must be one of: {', '.join(valid_times)}")
+        
         # Calculate fraud risk based on transaction characteristics
         fraud_risk_score = 0.0
         
@@ -214,22 +267,44 @@ async def predict_fraud(
         else:
             action = "APPROVE"
         
+        # Store in database if available
+        if db:
+            try:
+                conn = db.get_connection()
+                cursor = conn.cursor()
+                input_data = json.dumps({
+                    "transaction_amount": transaction_amount,
+                    "merchant_category": merchant_category,
+                    "time_of_day": time_of_day,
+                    "customer_age_account": customer_age_account
+                })
+                cursor.execute('''
+                    INSERT INTO predictions (prediction_type, input_data, risk_score, risk_category)
+                    VALUES (?, ?, ?, ?)
+                ''', ('fraud', input_data, fraud_risk_score, action))
+                conn.commit()
+                conn.close()
+            except Exception as db_error:
+                print(f"Database error: {db_error}")
+        
         return {
-            "fraud_risk_score": fraud_risk_score,
+            "fraud_risk_score": round(fraud_risk_score, 4),
             "action": action,
-            "message": "Real fraud analysis based on transaction characteristics."
+            "message": "Fraud analysis based on transaction characteristics"
         }
     
+    except ValueError as ve:
+        raise HTTPException(status_code=400, detail=str(ve))
     except Exception as e:
-        raise HTTPException(status_code=400, detail=str(e))
-
+        raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
 
 # ============ RUN SERVER ============
 
 if __name__ == "__main__":
+    port = int(os.getenv("PORT", 8000))
     uvicorn.run(
         "main:app",
         host="0.0.0.0",
-        port=8000,
-        reload=True
+        port=port,
+        reload=config.DEBUG
     )

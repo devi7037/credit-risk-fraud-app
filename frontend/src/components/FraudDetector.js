@@ -35,7 +35,7 @@ export default function FraudDetector() {
       params.append('customer_age_account', formData.customer_age_account);
 
       const response = await fetch(
-        `http://localhost:8000/predict/fraud?${params}`,
+        `https://credit-risk-fraud-app-backend.onrender.com/predict/fraud?${params}`,
         {
           method: 'POST',
           headers: {
@@ -59,9 +59,9 @@ export default function FraudDetector() {
   };
 
   const getFraudColor = (score) => {
-    if (score < 0.4) return '#10b981'; // green - safe
-    if (score < 0.7) return '#f59e0b'; // orange - review
-    return '#ef4444'; // red - block
+    if (score < 0.4) return '#10b981';
+    if (score < 0.7) return '#f59e0b';
+    return '#ef4444';
   };
 
   const getActionStyle = (action) => {
@@ -72,7 +72,6 @@ export default function FraudDetector() {
 
   return (
     <div className="fraud-detector-container">
-      {/* LEFT SIDE — FORM */}
       <div className="form-section">
         <h3>Enter Transaction Details</h3>
 
@@ -145,11 +144,9 @@ export default function FraudDetector() {
         </form>
       </div>
 
-      {/* RIGHT SIDE — ALWAYS VISIBLE */}
       <div className="result-section">
-        {/* IMAGE ALWAYS VISIBLE */}
         <div className="fraud-image-right">
-          <img src="/fraud.png" alt="Fraud detection illustration" />
+          <img src={process.env.PUBLIC_URL + '/fraud.png'} alt="Fraud detection illustration" />
         </div>
 
         {error && (
@@ -158,7 +155,6 @@ export default function FraudDetector() {
           </div>
         )}
 
-        {/*  RESULTS ONLY AFTER CLICK */}
         {result && (
           <>
             <h3>Fraud Detection Results</h3>
