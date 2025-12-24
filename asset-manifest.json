@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/credit-risk-fraud-app/static/css/main.fc15c09b.css",
-    "main.js": "/credit-risk-fraud-app/static/js/main.47127b07.js",
+    "main.js": "/credit-risk-fraud-app/static/js/main.40440585.js",
     "static/js/453.20359781.chunk.js": "/credit-risk-fraud-app/static/js/453.20359781.chunk.js",
     "index.html": "/credit-risk-fraud-app/index.html",
     "main.fc15c09b.css.map": "/credit-risk-fraud-app/static/css/main.fc15c09b.css.map",
-    "main.47127b07.js.map": "/credit-risk-fraud-app/static/js/main.47127b07.js.map",
+    "main.40440585.js.map": "/credit-risk-fraud-app/static/js/main.40440585.js.map",
     "453.20359781.chunk.js.map": "/credit-risk-fraud-app/static/js/453.20359781.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.fc15c09b.css",
-    "static/js/main.47127b07.js"
+    "static/js/main.40440585.js"
   ]
 }
