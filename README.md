@@ -1,4 +1,10 @@
 
+## 🚀 Live Application
+
+- **Frontend:** https://devi7037.github.io/credit-risk-fraud-app
+- **Backend API:** https://credit-risk-fraud-app.onrender.com
+- **API Documentation:** https://credit-risk-fraud-app.onrender.com/docs
+
 # Credit Risk & Fraud Detection App
 
 A full‑stack web application that helps assess **credit risk** and detect **fraudulent transactions** using a React frontend and a backend API. Users can sign up, log in, and then access tools for credit risk scoring and fraud analysis.[web:49]
